@@ -15,8 +15,29 @@
             margin: 0;
             padding: 0;
             font-family: 'Outfit', sans-serif;
-            background: radial-gradient(circle at top right, #c084fc 0%, #9d6fc1 100%); 
+            
+            /* --- BACKGROUND CHANGE START --- */
+            
+            /* 1. Set a fallback color (in case image doesn't load) */
+            background-color: #9d6fc1; 
+            
+            /* 2. Add your image URL here. Replace the placeholder path below. */
+            background-image: url('https://raw.githubusercontent.com/Sirkil/TelfastConset_LeadCapture/main/Telfastbg.jpg');
+            
+            /* Ensures the image doesn't repeat like tiles */
+            background-repeat: no-repeat;
+            
+            /* Centers the image */
+            background-position: center center;
+            
+            /* Optional: Makes the background stay still when scrolling */
+            background-attachment: fixed;
+            
+            /* Scales the image so it covers the entire screen */
             background-size: cover;
+            
+            /* --- BACKGROUND CHANGE END --- */
+
             min-height: 100vh;
             display: flex;
             flex-direction: column;
