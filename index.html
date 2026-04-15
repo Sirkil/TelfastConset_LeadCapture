@@ -15,29 +15,12 @@
             margin: 0;
             padding: 0;
             font-family: 'Outfit', sans-serif;
-            
-            /* --- BACKGROUND CHANGE START --- */
-            
-            /* 1. Set a fallback color (in case image doesn't load) */
             background-color: #9d6fc1; 
-            
-            /* 2. Add your image URL here. Replace the placeholder path below. */
             background-image: url('https://raw.githubusercontent.com/Sirkil/TelfastConset_LeadCapture/main/Telfastbg.jpg');
-            
-            /* Ensures the image doesn't repeat like tiles */
             background-repeat: no-repeat;
-            
-            /* Centers the image */
             background-position: center center;
-            
-            /* Optional: Makes the background stay still when scrolling */
             background-attachment: fixed;
-            
-            /* Scales the image so it covers the entire screen */
             background-size: cover;
-            
-            /* --- BACKGROUND CHANGE END --- */
-
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -126,12 +109,12 @@
             padding: 8px;
         }
         .brand-logo {
-            max-width: 300px; /* Adjust this width based on your logo's design */
+            max-width: 300px;
             height: 200px;
             display: block;
             margin-left: auto;
             margin-right: auto;
-}
+        }
     </style>
 </head>
 <body>
@@ -176,12 +159,11 @@
     </div>
 
     <script type="module">
-    // Dynamically pull values from the .env file
     const API_KEY = import.meta.env.VITE_JOTFORM_API_KEY;
-    const FORM_ID = import.meta.env.VITE_JOTFORM_FORM_ID; 
+    const CHECK_FORM_ID = import.meta.env.VITE_JOTFORM_FORM_ID; 
     const REDIRECT_URL = import.meta.env.VITE_REDIRECT_URL;
+    // -----------------------------
 
-    // Helper functions for the custom dialog
     window.closeDialog = function() {
         document.getElementById('dialogOverlay').style.display = 'none';
     }
@@ -204,7 +186,8 @@
         btn.innerText = "Checking...";
 
         try {
-            const response = await fetch(`https://api.jotform.com/form/${FORM_ID}/submissions?apiKey=${API_KEY}&limit=1000`);
+            // Check Form A's database
+            const response = await fetch(`https://api.jotform.com/form/${CHECK_FORM_ID}/submissions?apiKey=${API_KEY}&limit=1000`);
             const data = await response.json();
 
             if (data.responseCode === 200) {
@@ -217,11 +200,12 @@
                 });
 
                 if (alreadyExists) {
-                    // STOP: Show the custom dialog instead of an alert
+                    // Show the custom dialog if found in Form A
                     showDialog();
                     btn.disabled = false;
                     btn.innerText = "Next \u2192";
                 } else {
+                    // Redirect to Form B if not found
                     window.location.href = `${REDIRECT_URL}?email=${encodeURIComponent(emailValue)}`;
                 }
             } else {
