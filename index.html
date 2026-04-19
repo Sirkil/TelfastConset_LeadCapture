@@ -158,12 +158,14 @@
             </div>
         </div>
     </div>
-
-    <script type="module">
+<script type="module">
     const API_KEY = "6c3b6aea1525c0c290966ea4124a3425";
     const CHECK_FORM_ID_1 = "253212443623953"; 
     const CHECK_FORM_ID_2 = "260242705381956"; 
     const REDIRECT_URL = "https://form.jotform.com/260242705381956";
+    
+    // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
+    const TRACKING_URL = "https://script.google.com/macros/s/AKfycbwIuPPwY5AMdVwwbW2WZ1D54NHECnHbUtnD63mCnct1_rqvrvq9yYKp4D8r7gNdqwEP/exec"; 
 
     function closeDialog() {
         document.getElementById('dialogOverlay').style.display = 'none';
@@ -182,6 +184,22 @@
             });
         }
         return false;
+    }
+
+    // Function to send the tracking data to Google Sheets
+    async function trackClick(actionText) {
+        try {
+            await fetch(TRACKING_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Prevents CORS errors from Google Script
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ clickedElement: actionText })
+            });
+        } catch (error) {
+            console.error("Tracking error:", error);
+        }
     }
 
     async function checkEmail() {
@@ -210,10 +228,16 @@
             const foundInForm2 = emailExistsInSubmissions(data2, emailValue);
 
             if (foundInForm1 || foundInForm2) {
+                // Track: Already registered
+                trackClick('Already registered');
+                
                 showDialog();
                 btn.disabled = false;
                 btn.innerText = "Next \u2192";
             } else {
+                // Track: Redirected to form (We use await to ensure tracking finishes before page redirects)
+                await trackClick('Redirected to form');
+                
                 window.location.href = `${REDIRECT_URL}?email=${encodeURIComponent(emailValue)}`;
             }
             
@@ -228,6 +252,6 @@
     // Attach Event Listeners safely inside the module
     document.getElementById('nextBtn').addEventListener('click', checkEmail);
     document.getElementById('closeDialogBtn').addEventListener('click', closeDialog);
-    </script>
+</script>
 </body>
 </html>
